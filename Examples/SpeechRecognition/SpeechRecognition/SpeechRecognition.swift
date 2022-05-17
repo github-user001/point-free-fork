@@ -94,10 +94,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action, e
       return .none
 
     case .authorized:
-      let request = SFSpeechAudioBufferRecognitionRequest()
-      request.shouldReportPartialResults = true
-      request.requiresOnDeviceRecognition = false
-      return environment.speechClient.recognitionTask(request)
+      return environment.speechClient.recognitionTask()
         .catchToEffect(AppAction.speech)
 
     @unknown default:
@@ -160,7 +157,7 @@ struct SpeechRecognitionView_Previews: PreviewProvider {
         reducer: appReducer,
         environment: AppEnvironment(
           mainQueue: .main,
-          speechClient: .live
+          speechClient: .apple
         )
       )
     )

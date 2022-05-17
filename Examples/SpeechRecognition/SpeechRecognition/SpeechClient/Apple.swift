@@ -3,21 +3,27 @@ import ComposableArchitecture
 import Speech
 
 extension SpeechClient {
-  static var live: Self {
+  static var apple: Self {
     var audioEngine: AVAudioEngine?
     var inputNode: AVAudioInputNode?
     var recognitionTask: SFSpeechRecognitionTask?
+    let request = SFSpeechAudioBufferRecognitionRequest()
 
     return Self(
       finishTask: {
         .fireAndForget {
+          request.endAudio()
           audioEngine?.stop()
           inputNode?.removeTap(onBus: 0)
           recognitionTask?.finish()
         }
       },
-      recognitionTask: { request in
+      recognitionTask: {
         Effect.run { subscriber in
+
+          request.shouldReportPartialResults = true
+          request.requiresOnDeviceRecognition = false
+
           let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
           let speechRecognizerDelegate = SpeechRecognizerDelegate(
             availabilityDidChange: { available in
@@ -60,7 +66,7 @@ extension SpeechClient {
             onBus: 0,
             bufferSize: 1024,
             format: inputNode!.outputFormat(forBus: 0)
-          ) { buffer, when in
+          ) { buffer, _ in
             request.append(buffer)
           }
 
@@ -93,9 +99,7 @@ private class SpeechRecognizerDelegate: NSObject, SFSpeechRecognizerDelegate {
     self.availabilityDidChange = availabilityDidChange
   }
 
-  func speechRecognizer(
-    _ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool
-  ) {
-    self.availabilityDidChange(available)
+  func speechRecognizer(_: SFSpeechRecognizer, availabilityDidChange available: Bool) {
+    availabilityDidChange(available)
   }
 }

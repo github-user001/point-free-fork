@@ -6,7 +6,7 @@ import Speech
   extension SpeechClient {
     static let failing = Self(
       finishTask: { .failing("SpeechClient.finishTask") },
-      recognitionTask: { _ in .failing("SpeechClient.recognitionTask") },
+      recognitionTask: { .failing("SpeechClient.recognitionTask") },
       requestAuthorization: { .failing("SpeechClient.requestAuthorization") }
     )
   }

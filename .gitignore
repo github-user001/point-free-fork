@@ -4,3 +4,7 @@
 /*.xcodeproj
 xcuserdata/
 Package.resolved
+/.idea/
+/ComposableArchitecture.xcworkspace/.idea/
+/Examples/CaseStudies/.idea/
+/Examples/SpeechRecognition/.idea/
