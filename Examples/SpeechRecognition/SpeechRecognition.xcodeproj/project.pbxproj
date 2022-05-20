@@ -7,12 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		404E0DEA283440FE0081934C /* Apple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404E0DE9283440FE0081934C /* Apple.swift */; };
+		40C90FAB283443000061257B /* SymblApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40C90FAA283443000061257B /* SymblApi.swift */; };
+		40C90FAE283443610061257B /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 40C90FAD283443610061257B /* Starscream */; };
+		40C90FB02834517A0061257B /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40C90FAF2834517A0061257B /* Keys.swift */; };
 		CA2332102447ACFA00B818EB /* SpeechRecognitionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA23320F2447ACFA00B818EB /* SpeechRecognitionApp.swift */; };
 		CA2332122447ACFA00B818EB /* SpeechRecognition.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2332112447ACFA00B818EB /* SpeechRecognition.swift */; };
 		CA2332142447ACFB00B818EB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA2332132447ACFB00B818EB /* Assets.xcassets */; };
 		CA2332252447ACFC00B818EB /* SpeechRecognitionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2332242447ACFC00B818EB /* SpeechRecognitionTests.swift */; };
 		CACC04222447C66C000C5725 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACC04212447C66C000C5725 /* Client.swift */; };
-		CACC04242447D96D000C5725 /* Apple.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACC04232447D96D000C5725 /* Apple.swift */; };
+		CACC04242447D96D000C5725 /* Symbl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACC04232447D96D000C5725 /* Symbl.swift */; };
 		CACC04272447DBAF000C5725 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACC04262447DBAF000C5725 /* Models.swift */; };
 		CACC04292447DF0B000C5725 /* Failing.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACC04282447DF0B000C5725 /* Failing.swift */; };
 		DC1394162469E34200EE1157 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = DC1394152469E34200EE1157 /* ComposableArchitecture */; };
@@ -52,6 +56,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		404E0DE9283440FE0081934C /* Apple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Apple.swift; sourceTree = "<group>"; };
+		40C90FAA283443000061257B /* SymblApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymblApi.swift; sourceTree = "<group>"; };
+		40C90FAF2834517A0061257B /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		CA23320A2447ACFA00B818EB /* SpeechRecognition.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpeechRecognition.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA23320F2447ACFA00B818EB /* SpeechRecognitionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognitionApp.swift; sourceTree = "<group>"; };
 		CA2332112447ACFA00B818EB /* SpeechRecognition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognition.swift; sourceTree = "<group>"; };
@@ -61,7 +68,7 @@
 		CA2332242447ACFC00B818EB /* SpeechRecognitionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognitionTests.swift; sourceTree = "<group>"; };
 		CA23322F2447AE0300B818EB /* swift-composable-architecture */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "swift-composable-architecture"; path = ../..; sourceTree = "<group>"; };
 		CACC04212447C66C000C5725 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
-		CACC04232447D96D000C5725 /* Apple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Apple.swift; sourceTree = "<group>"; };
+		CACC04232447D96D000C5725 /* Symbl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Symbl.swift; sourceTree = "<group>"; };
 		CACC04262447DBAF000C5725 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		CACC04282447DF0B000C5725 /* Failing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Failing.swift; sourceTree = "<group>"; };
 		DCB9EA3F26B21ED000497C03 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -73,6 +80,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC1394162469E34200EE1157 /* ComposableArchitecture in Frameworks */,
+				40C90FAE283443610061257B /* Starscream in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +94,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		40C90FA9283442E90061257B /* Symbl */ = {
+			isa = PBXGroup;
+			children = (
+				CACC04232447D96D000C5725 /* Symbl.swift */,
+				40C90FAA283443000061257B /* SymblApi.swift */,
+			);
+			path = Symbl;
+			sourceTree = "<group>";
+		};
 		CA2332012447ACFA00B818EB = {
 			isa = PBXGroup;
 			children = (
@@ -114,6 +131,7 @@
 				CA23320F2447ACFA00B818EB /* SpeechRecognitionApp.swift */,
 				CA2332132447ACFB00B818EB /* Assets.xcassets */,
 				CA23321B2447ACFB00B818EB /* Info.plist */,
+				40C90FAF2834517A0061257B /* Keys.swift */,
 			);
 			path = SpeechRecognition;
 			sourceTree = "<group>";
@@ -129,8 +147,9 @@
 		CACC04252447DBA3000C5725 /* SpeechClient */ = {
 			isa = PBXGroup;
 			children = (
+				40C90FA9283442E90061257B /* Symbl */,
 				CACC04212447C66C000C5725 /* Client.swift */,
-				CACC04232447D96D000C5725 /* Apple.swift */,
+				404E0DE9283440FE0081934C /* Apple.swift */,
 				CACC04282447DF0B000C5725 /* Failing.swift */,
 				CACC04262447DBAF000C5725 /* Models.swift */,
 			);
@@ -156,6 +175,7 @@
 			name = SpeechRecognition;
 			packageProductDependencies = (
 				DC1394152469E34200EE1157 /* ComposableArchitecture */,
+				40C90FAD283443610061257B /* Starscream */,
 			);
 			productName = SpeechRecognition;
 			productReference = CA23320A2447ACFA00B818EB /* SpeechRecognition.app */;
@@ -210,6 +230,9 @@
 				Base,
 			);
 			mainGroup = CA2332012447ACFA00B818EB;
+			packageReferences = (
+				40C90FAC283443610061257B /* XCRemoteSwiftPackageReference "Starscream" */,
+			);
 			productRefGroup = CA23320B2447ACFA00B818EB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -243,11 +266,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CACC04242447D96D000C5725 /* Apple.swift in Sources */,
+				CACC04242447D96D000C5725 /* Symbl.swift in Sources */,
 				CACC04292447DF0B000C5725 /* Failing.swift in Sources */,
+				40C90FAB283443000061257B /* SymblApi.swift in Sources */,
 				CA2332102447ACFA00B818EB /* SpeechRecognitionApp.swift in Sources */,
+				404E0DEA283440FE0081934C /* Apple.swift in Sources */,
 				CA2332122447ACFA00B818EB /* SpeechRecognition.swift in Sources */,
 				CACC04222447C66C000C5725 /* Client.swift in Sources */,
+				40C90FB02834517A0061257B /* Keys.swift in Sources */,
 				CACC04272447DBAF000C5725 /* Models.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -390,6 +416,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = KW8RLKUW3C;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SpeechRecognition/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -408,6 +435,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = KW8RLKUW3C;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SpeechRecognition/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -493,7 +521,23 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		40C90FAC283443610061257B /* XCRemoteSwiftPackageReference "Starscream" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/daltoniam/Starscream.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		40C90FAD283443610061257B /* Starscream */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 40C90FAC283443610061257B /* XCRemoteSwiftPackageReference "Starscream" */;
+			productName = Starscream;
+		};
 		DC1394152469E34200EE1157 /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ComposableArchitecture;

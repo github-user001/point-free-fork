@@ -4,15 +4,15 @@ import Speech
 import SwiftUI
 
 private let readMe = """
-  This application demonstrates how to work with a complex dependency in the Composable \
-  Architecture. It uses the SFSpeechRecognizer API from the Speech framework to listen to audio on \
-  the device and live-transcribe it to the UI.
-  """
+This application demonstrates how to work with a complex dependency in the Composable \
+Architecture. It uses the SFSpeechRecognizer API from the Speech framework to listen to audio on \
+the device and live-transcribe it to the UI.
+"""
 
 struct AppState: Equatable {
   var alert: AlertState<AppAction>?
   var isRecording = false
-  var speechRecognizerAuthorizationStatus = SFSpeechRecognizerAuthorizationStatus.notDetermined
+  var speechRecognizerAuthorization: SpeechRecognitionAuthorizationResult = .uninitiated
   var transcribedText = ""
 }
 
@@ -20,7 +20,7 @@ enum AppAction: Equatable {
   case dismissAuthorizationStateAlert
   case recordButtonTapped
   case speech(Result<SpeechClient.Action, SpeechClient.Error>)
-  case speechRecognizerAuthorizationStatusResponse(SFSpeechRecognizerAuthorizationStatus)
+  case speechRecognizerAuthorizationStatusResponse(SpeechRecognitionAuthorizationResult)
 }
 
 struct AppEnvironment {
@@ -37,7 +37,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action, e
     return .none
 
   case .speech(.failure(.couldntConfigureAudioSession)),
-    .speech(.failure(.couldntStartAudioEngine)):
+       .speech(.failure(.couldntStartAudioEngine)):
     state.alert = .init(title: .init("Problem with audio device. Please try again."))
     return .none
 
@@ -70,9 +70,11 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action, e
     return environment.speechClient.finishTask()
       .fireAndForget()
 
-  case let .speechRecognizerAuthorizationStatusResponse(status):
+  case let .speechRecognizerAuthorizationStatusResponse(result):
+    let status = result.status
+
     state.isRecording = status == .authorized
-    state.speechRecognizerAuthorizationStatus = status
+    state.speechRecognizerAuthorization = result
 
     switch status {
     case .notDetermined:
@@ -107,7 +109,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action, e
 struct AuthorizationStateAlert: Equatable, Identifiable {
   var title: String
 
-  var id: String { self.title }
+  var id: String { title }
 }
 
 struct SpeechRecognitionView: View {

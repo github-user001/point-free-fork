@@ -10,6 +10,46 @@ struct SpeechRecognitionMetadata: Equatable {
   var voiceAnalytics: VoiceAnalytics?
 }
 
+enum SpeechRecognizerAuthorizationStatus: Int, Equatable {
+  case notDetermined = 0
+  case denied = 1
+  case restricted = 2
+  case authorized = 3
+  /**
+   * TODO handle all cases
+   * incorrect keys
+   * expired
+   */
+}
+
+extension SFSpeechRecognizerAuthorizationStatus {
+  var toSpeechRecognizerAuthorizationStatus: SpeechRecognizerAuthorizationStatus {
+    SpeechRecognizerAuthorizationStatus(rawValue: rawValue) ?? .notDetermined
+  }
+}
+
+struct SpeechRecognitionAuthorizationResult: Equatable {
+  let status: SpeechRecognizerAuthorizationStatus
+  var token: String? = nil
+  var expiresAt: Date? = nil
+
+  init(status: SpeechRecognizerAuthorizationStatus) {
+    self.status = status
+  }
+
+  init(status: SpeechRecognizerAuthorizationStatus, token: String, expiresAt: Date) {
+    self.status = status
+    self.token = token
+    self.expiresAt = expiresAt
+  }
+}
+
+extension SpeechRecognitionAuthorizationResult {
+  static let uninitiated = SpeechRecognitionAuthorizationResult(
+    status: .notDetermined
+  )
+}
+
 struct SpeechRecognitionResult: Equatable {
   var bestTranscription: Transcription
   var isFinal: Bool
@@ -45,52 +85,52 @@ struct AcousticFeature: Equatable {
 
 extension SpeechRecognitionMetadata {
   init(_ speechRecognitionMetadata: SFSpeechRecognitionMetadata) {
-    self.averagePauseDuration = speechRecognitionMetadata.averagePauseDuration
-    self.speakingRate = speechRecognitionMetadata.speakingRate
-    self.voiceAnalytics = speechRecognitionMetadata.voiceAnalytics.map(VoiceAnalytics.init)
+    averagePauseDuration = speechRecognitionMetadata.averagePauseDuration
+    speakingRate = speechRecognitionMetadata.speakingRate
+    voiceAnalytics = speechRecognitionMetadata.voiceAnalytics.map(VoiceAnalytics.init)
   }
 }
 
 extension SpeechRecognitionResult {
   init(_ speechRecognitionResult: SFSpeechRecognitionResult) {
-    self.bestTranscription = Transcription(speechRecognitionResult.bestTranscription)
-    self.isFinal = speechRecognitionResult.isFinal
-    self.speechRecognitionMetadata = speechRecognitionResult.speechRecognitionMetadata
+    bestTranscription = Transcription(speechRecognitionResult.bestTranscription)
+    isFinal = speechRecognitionResult.isFinal
+    speechRecognitionMetadata = speechRecognitionResult.speechRecognitionMetadata
       .map(SpeechRecognitionMetadata.init)
-    self.transcriptions = speechRecognitionResult.transcriptions.map(Transcription.init)
+    transcriptions = speechRecognitionResult.transcriptions.map(Transcription.init)
   }
 }
 
 extension Transcription {
   init(_ transcription: SFTranscription) {
-    self.formattedString = transcription.formattedString
-    self.segments = transcription.segments.map(TranscriptionSegment.init)
+    formattedString = transcription.formattedString
+    segments = transcription.segments.map(TranscriptionSegment.init)
   }
 }
 
 extension TranscriptionSegment {
   init(_ transcriptionSegment: SFTranscriptionSegment) {
-    self.alternativeSubstrings = transcriptionSegment.alternativeSubstrings
-    self.confidence = transcriptionSegment.confidence
-    self.duration = transcriptionSegment.duration
-    self.substring = transcriptionSegment.substring
-    self.substringRange = transcriptionSegment.substringRange
-    self.timestamp = transcriptionSegment.timestamp
+    alternativeSubstrings = transcriptionSegment.alternativeSubstrings
+    confidence = transcriptionSegment.confidence
+    duration = transcriptionSegment.duration
+    substring = transcriptionSegment.substring
+    substringRange = transcriptionSegment.substringRange
+    timestamp = transcriptionSegment.timestamp
   }
 }
 
 extension VoiceAnalytics {
   init(_ voiceAnalytics: SFVoiceAnalytics) {
-    self.jitter = AcousticFeature(voiceAnalytics.jitter)
-    self.pitch = AcousticFeature(voiceAnalytics.pitch)
-    self.shimmer = AcousticFeature(voiceAnalytics.shimmer)
-    self.voicing = AcousticFeature(voiceAnalytics.voicing)
+    jitter = AcousticFeature(voiceAnalytics.jitter)
+    pitch = AcousticFeature(voiceAnalytics.pitch)
+    shimmer = AcousticFeature(voiceAnalytics.shimmer)
+    voicing = AcousticFeature(voiceAnalytics.voicing)
   }
 }
 
 extension AcousticFeature {
   init(_ acousticFeature: SFAcousticFeature) {
-    self.acousticFeatureValuePerFrame = acousticFeature.acousticFeatureValuePerFrame
-    self.frameDuration = acousticFeature.frameDuration
+    acousticFeatureValuePerFrame = acousticFeature.acousticFeatureValuePerFrame
+    frameDuration = acousticFeature.frameDuration
   }
 }

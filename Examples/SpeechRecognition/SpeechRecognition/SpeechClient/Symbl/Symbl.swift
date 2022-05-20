@@ -6,23 +6,37 @@ extension SpeechClient {
   static var symbl: Self {
     var audioEngine: AVAudioEngine?
     var inputNode: AVAudioInputNode?
-    var recognitionTask: SFSpeechRecognitionTask?
-    let request = SFSpeechAudioBufferRecognitionRequest()
+    let symblApi = Symbl()
 
     return Self(
-      finishTask: {
-        .fireAndForget {
-          request.endAudio()
-          audioEngine?.stop()
-          inputNode?.removeTap(onBus: 0)
-          recognitionTask?.finish()
+      requestAuthorization: {
+        .future { callback in
+
+          symblApi.authenticate(authCallback: { result in
+            switch result {
+            case let .success(token):
+              print("Token: \(token)")
+              let authResult = SpeechRecognitionAuthorizationResult(
+                status: .authorized,
+                token: token.token,
+                expiresAt: token.expiresAt!
+              )
+              callback(.success(authResult))
+
+            case let .failure(error):
+              fatalError("Error authenticating \(error)")
+              print("Error authenticating: \(error)")
+            }
+          })
+
+//          SFSpeechRecognizer.requestAuthorization { status in
+//            callback(.success(status))
+//          }
         }
       },
+
       recognitionTask: {
         Effect.run { subscriber in
-
-          request.shouldReportPartialResults = true
-          request.requiresOnDeviceRecognition = false
 
           let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
           let speechRecognizerDelegate = SpeechRecognizerDelegate(
@@ -35,7 +49,7 @@ extension SpeechClient {
           let cancellable = AnyCancellable {
             audioEngine?.stop()
             inputNode?.removeTap(onBus: 0)
-            recognitionTask?.cancel()
+//            recognitionTask?.cancel()
             _ = speechRecognizer
             _ = speechRecognizerDelegate
           }
@@ -43,7 +57,11 @@ extension SpeechClient {
           audioEngine = AVAudioEngine()
           let audioSession = AVAudioSession.sharedInstance()
           do {
-            try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
+            try audioSession.setCategory(
+              .record,
+              mode: .measurement,
+              options: .duckOthers
+            )
             try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
           } catch {
             subscriber.send(completion: .failure(.couldntConfigureAudioSession))
@@ -51,23 +69,25 @@ extension SpeechClient {
           }
           inputNode = audioEngine!.inputNode
 
-          recognitionTask = speechRecognizer.recognitionTask(with: request) { result, error in
-            switch (result, error) {
-            case let (.some(result), _):
-              subscriber.send(.taskResult(SpeechRecognitionResult(result)))
-            case (_, .some):
-              subscriber.send(completion: .failure(.taskError))
-            case (.none, .none):
-              fatalError("It should not be possible to have both a nil result and nil error.")
-            }
-          }
+//          recognitionTask = speechRecognizer.recognitionTask(with: request) { result, error in
+//            switch (result, error) {
+//            case let (.some(result), _):
+//              subscriber.send(.taskResult(SpeechRecognitionResult(result)))
+//            case (_, .some):
+//              subscriber.send(completion: .failure(.taskError))
+//            case (.none, .none):
+//              fatalError("It should not be possible to have both a nil result and nil error.")
+//            }
+//          }
 
           inputNode!.installTap(
             onBus: 0,
             bufferSize: 1024,
             format: inputNode!.outputFormat(forBus: 0)
-          ) { buffer, _ in
-            request.append(buffer)
+          ) { _, _ in
+            // websocket: send audio data to server
+
+//            request.append(buffer)
           }
 
           audioEngine!.prepare()
@@ -81,11 +101,13 @@ extension SpeechClient {
           return cancellable
         }
       },
-      requestAuthorization: {
-        .future { callback in
-          SFSpeechRecognizer.requestAuthorization { status in
-            callback(.success(status))
-          }
+
+      finishTask: {
+        .fireAndForget {
+//          request.endAudio()
+          audioEngine?.stop()
+          inputNode?.removeTap(onBus: 0)
+//          recognitionTask?.finish()
         }
       }
     )

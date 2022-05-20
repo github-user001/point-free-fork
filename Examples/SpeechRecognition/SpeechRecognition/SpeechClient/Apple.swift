@@ -10,12 +10,11 @@ extension SpeechClient {
     let request = SFSpeechAudioBufferRecognitionRequest()
 
     return Self(
-      finishTask: {
-        .fireAndForget {
-          request.endAudio()
-          audioEngine?.stop()
-          inputNode?.removeTap(onBus: 0)
-          recognitionTask?.finish()
+      requestAuthorization: {
+        .future { callback in
+          SFSpeechRecognizer.requestAuthorization { status in
+            callback(.success(SpeechRecognitionAuthorizationResult(status: status.toSpeechRecognizerAuthorizationStatus)))
+          }
         }
       },
       recognitionTask: {
@@ -80,12 +79,12 @@ extension SpeechClient {
 
           return cancellable
         }
-      },
-      requestAuthorization: {
-        .future { callback in
-          SFSpeechRecognizer.requestAuthorization { status in
-            callback(.success(status))
-          }
+      }, finishTask: {
+        .fireAndForget {
+          request.endAudio()
+          audioEngine?.stop()
+          inputNode?.removeTap(onBus: 0)
+          recognitionTask?.finish()
         }
       }
     )

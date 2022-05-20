@@ -3,9 +3,9 @@ import ComposableArchitecture
 import Speech
 
 struct SpeechClient {
-  var finishTask: () -> Effect<Never, Never>
+  var requestAuthorization: () -> Effect<SpeechRecognitionAuthorizationResult, Never>
   var recognitionTask: () -> Effect<Action, Error>
-  var requestAuthorization: () -> Effect<SFSpeechRecognizerAuthorizationStatus, Never>
+  var finishTask: () -> Effect<Never, Never>
 
   enum Action: Equatable {
     case availabilityDidChange(isAvailable: Bool)

@@ -5,9 +5,9 @@ import Speech
 #if DEBUG
   extension SpeechClient {
     static let failing = Self(
-      finishTask: { .failing("SpeechClient.finishTask") },
+      requestAuthorization: { .failing("SpeechClient.requestAuthorization") },
       recognitionTask: { .failing("SpeechClient.recognitionTask") },
-      requestAuthorization: { .failing("SpeechClient.requestAuthorization") }
+      finishTask: { .failing("SpeechClient.finishTask") }
     )
   }
 #endif
