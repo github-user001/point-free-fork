@@ -1,5 +1,6 @@
 import Combine
 import ComposableArchitecture
+import Foundation
 import Speech
 
 extension SpeechClient {
@@ -13,11 +14,14 @@ extension SpeechClient {
       requestAuthorization: {
         .future { callback in
           SFSpeechRecognizer.requestAuthorization { status in
-            callback(.success(SpeechRecognitionAuthorizationResult(status: status.toSpeechRecognizerAuthorizationStatus)))
+            callback(.success(SpeechRecognitionAuthorizationResult(
+              status: status
+                .toSpeechRecognizerAuthorizationStatus
+            )))
           }
         }
       },
-      recognitionTask: {
+      recognitionTask: { _ in
         Effect.run { subscriber in
 
           request.shouldReportPartialResults = true
@@ -42,7 +46,11 @@ extension SpeechClient {
           audioEngine = AVAudioEngine()
           let audioSession = AVAudioSession.sharedInstance()
           do {
-            try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
+            try audioSession.setCategory(
+              .record,
+              mode: .measurement,
+              options: .duckOthers
+            )
             try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
           } catch {
             subscriber.send(completion: .failure(.couldntConfigureAudioSession))
@@ -50,16 +58,19 @@ extension SpeechClient {
           }
           inputNode = audioEngine!.inputNode
 
-          recognitionTask = speechRecognizer.recognitionTask(with: request) { result, error in
-            switch (result, error) {
-            case let (.some(result), _):
-              subscriber.send(.taskResult(SpeechRecognitionResult(result)))
-            case (_, .some):
-              subscriber.send(completion: .failure(.taskError))
-            case (.none, .none):
-              fatalError("It should not be possible to have both a nil result and nil error.")
+          recognitionTask = speechRecognizer
+            .recognitionTask(with: request) { result, error in
+              switch (result, error) {
+              case let (.some(result), _):
+                subscriber.send(.taskResult(SpeechRecognitionResult(result)))
+              case (_, .some):
+                subscriber.send(completion: .failure(.taskError))
+              case (.none, .none):
+                fatalError(
+                  "It should not be possible to have both a nil result and nil error."
+                )
+              }
             }
-          }
 
           inputNode!.installTap(
             onBus: 0,

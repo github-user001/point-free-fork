@@ -28,7 +28,11 @@ struct AppEnvironment {
   var speechClient: SpeechClient
 }
 
-let appReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action, environment in
+let appReducer = Reducer<
+  AppState,
+  AppAction,
+  AppEnvironment
+> { state, action, environment in
   switch action {
   case .dismissAuthorizationStateAlert:
     state.alert = nil
@@ -64,7 +68,9 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action, e
     }
 
   case let .speech(.failure(error)):
-    state.alert = .init(title: .init("An error occured while transcribing. Please try again."))
+    state
+      .alert =
+      .init(title: .init("An error occured while transcribing. Please try again."))
     return environment.speechClient.finishTask()
       .fireAndForget()
 
@@ -94,7 +100,8 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action, e
       return .none
 
     case .authorized:
-      return environment.speechClient.recognitionTask()
+      return environment.speechClient
+        .recognitionTask(state.speechRecognizerAuthorization.token)
         .catchToEffect(AppAction.speech)
 
     @unknown default:
@@ -114,7 +121,7 @@ struct SpeechRecognitionView: View {
   let store: Store<AppState, AppAction>
 
   var body: some View {
-    WithViewStore(self.store) { viewStore in
+    WithViewStore(store) { viewStore in
       VStack {
         VStack(alignment: .leading) {
           Text(readMe)
@@ -142,9 +149,11 @@ struct SpeechRecognitionView: View {
           .background(viewStore.isRecording ? Color.red : .green)
           .cornerRadius(16)
         }
+      }.onAppear {
+        viewStore.send(.recordButtonTapped)
       }
       .padding()
-      .alert(self.store.scope(state: \.alert), dismiss: .dismissAuthorizationStateAlert)
+      .alert(store.scope(state: \.alert), dismiss: .dismissAuthorizationStateAlert)
     }
   }
 }

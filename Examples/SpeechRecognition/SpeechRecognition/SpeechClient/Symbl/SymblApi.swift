@@ -81,7 +81,7 @@ class Symbl {
     let session = URLSession.shared
     session.dataTask(
       with: request as URLRequest,
-      completionHandler:  { data, _, error in
+      completionHandler: { data, _, error in
         if let data = data {
           do {
             let json = try JSONSerialization
@@ -184,42 +184,4 @@ func connect(_ token: String) {
 
 func handleError(_ error: Error?) {
   print(error?.localizedDescription)
-}
-
-// MARK: Recording audio
-
-// this will be moved to the client
-private func prepareEngine() throws -> AVAudioEngine {
-  let audioEngine = AVAudioEngine()
-
-//    let request = SFSpeechAudioBufferRecognitionRequest()
-//    request.shouldReportPartialResults = true
-
-  let audioSession = AVAudioSession.sharedInstance()
-  try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
-  try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
-  let inputNode = audioEngine.inputNode
-
-  let recordingFormat = inputNode.outputFormat(forBus: 0)
-  inputNode
-    .installTap(
-      onBus: 0,
-      bufferSize: 1024,
-      format: recordingFormat
-    ) { (buffer: AVAudioPCMBuffer, _: AVAudioTime) in
-      print("something is happening")
-      // send the audio data to the websocket
-//    if isConnected {
-      let data = buffer.floatChannelData?[0]
-      let bufferData = Data(
-        bytes: data!,
-        count: Int(buffer.frameLength) * MemoryLayout<Float>.size
-      )
-//    ws.write(data: bufferData)
-//    }
-    }
-  audioEngine.prepare()
-  try audioEngine.start()
-
-  return audioEngine
 }

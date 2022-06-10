@@ -4,7 +4,7 @@ import Speech
 
 struct SpeechClient {
   var requestAuthorization: () -> Effect<SpeechRecognitionAuthorizationResult, Never>
-  var recognitionTask: () -> Effect<Action, Error>
+  var recognitionTask: (_ token: String?) -> Effect<Action, Error>
   var finishTask: () -> Effect<Never, Never>
 
   enum Action: Equatable {
