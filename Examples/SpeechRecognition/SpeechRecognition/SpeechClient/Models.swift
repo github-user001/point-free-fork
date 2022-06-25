@@ -53,13 +53,13 @@ extension SpeechRecognitionAuthorizationResult {
 struct SpeechRecognitionResult: Equatable {
   var bestTranscription: Transcription
   var isFinal: Bool
-  var speechRecognitionMetadata: SpeechRecognitionMetadata?
-  var transcriptions: [Transcription]
+//  var speechRecognitionMetadata: SpeechRecognitionMetadata?
+//  var transcriptions: [Transcription]
 }
 
 struct Transcription: Equatable {
   var formattedString: String
-  var segments: [TranscriptionSegment]
+//  var segments: [TranscriptionSegment]
 }
 
 struct TranscriptionSegment: Equatable {
@@ -95,16 +95,26 @@ extension SpeechRecognitionResult {
   init(_ speechRecognitionResult: SFSpeechRecognitionResult) {
     bestTranscription = Transcription(speechRecognitionResult.bestTranscription)
     isFinal = speechRecognitionResult.isFinal
-    speechRecognitionMetadata = speechRecognitionResult.speechRecognitionMetadata
-      .map(SpeechRecognitionMetadata.init)
-    transcriptions = speechRecognitionResult.transcriptions.map(Transcription.init)
+//    speechRecognitionMetadata = speechRecognitionResult.speechRecognitionMetadata
+//      .map(SpeechRecognitionMetadata.init)
+//    transcriptions = speechRecognitionResult.transcriptions.map(Transcription.init)
+  }
+}
+
+extension SpeechRecognitionResult {
+  init(_ deepgramRecognitionResponseString: String) {
+    bestTranscription = Transcription(
+      formattedString: deepgramRecognitionResponseString
+    )
+    isFinal = false
+    
   }
 }
 
 extension Transcription {
   init(_ transcription: SFTranscription) {
     formattedString = transcription.formattedString
-    segments = transcription.segments.map(TranscriptionSegment.init)
+//    segments = transcription.segments.map(TranscriptionSegment.init)
   }
 }
 

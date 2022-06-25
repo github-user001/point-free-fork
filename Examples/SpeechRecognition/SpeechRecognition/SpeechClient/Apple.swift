@@ -92,6 +92,7 @@ extension SpeechClient {
         }
       }, finishTask: {
         .fireAndForget {
+          print("apple ----- fireAndForget")
           request.endAudio()
           audioEngine?.stop()
           inputNode?.removeTap(onBus: 0)
