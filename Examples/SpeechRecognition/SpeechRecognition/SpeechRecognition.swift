@@ -13,7 +13,11 @@ struct AppState: Equatable {
   var alert: AlertState<AppAction>?
   var isRecording = false
   var speechRecognizerAuthorization: SpeechRecognitionAuthorizationResult = .uninitiated
-  var transcribedText = ""
+//  var transcribedText = ""
+  var transcript: Transcription  = Transcription(
+    sections: [
+      Section(start: 0.0, chunks: [])
+    ])
 }
 
 enum AppAction: Equatable {
@@ -59,13 +63,34 @@ let appReducer = Reducer<
     return .none
 
   case let .speech(.success(.taskResult(result))):
-    state.transcribedText = result.bestTranscription.formattedString
-    if result.isFinal {
-      return environment.speechClient.finishTask()
-        .fireAndForget()
-    } else {
-      return .none
+    let currentSection = state.transcript.sections.last!
+    
+    let previousEnd = currentSection.chunks.last?.words.last?.end ?? 0
+    let newBeginning = result.words.first!.start
+    
+    let pauseTime = newBeginning - previousEnd
+    print("Pause time is \(pauseTime)")
+    
+    let sectionPauseThreshold = Float16(3.0)
+    
+    if pauseTime > sectionPauseThreshold {
+      state.transcript.sections.append(Section(start:newBeginning))
     }
+    
+//    let newSection = Section(start: result.words.first!.start, chunks: result.words)
+    state.transcript.sections[state.transcript.sections.count - 1].chunks.append(
+      Chunk(
+        start: result.words.first!.start,
+        end: result.words.last!.end,
+        words: result.words
+      ))
+    
+//    if result.isFinal {
+//      return environment.speechClient.finishTask()
+//        .fireAndForget()
+//    } else {
+      return .none
+//    }
 
   case let .speech(.failure(error)):
     state
@@ -127,13 +152,33 @@ struct SpeechRecognitionView: View {
           Text(readMe)
             .padding(.bottom, 32)
 
-          Text(viewStore.transcribedText)
-            .font(.largeTitle)
-            .minimumScaleFactor(0.1)
-            .frame(minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
+//          Text(viewStore.transcript.sections.first!.chun)
+//            .font(.largeTitle)
+//            .minimumScaleFactor(0.1)
+//            .frame(minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
         }
 
         Spacer()
+        
+        ScrollView {
+          ForEach(viewStore.transcript.sections) { section in
+//            Text(section.chunks.first?.words.first?.text ?? "no text yet")
+            VStack {
+              Text(section.id.description).font(.title)
+              ForEach(section.chunks) {chunk in
+                HStack {
+                  ForEach(chunk.words) { word in
+                    Text(word.text).onTapGesture {
+                      print(word.text)
+                      print(word.start)
+                    }
+                  }
+                }
+              }
+              Spacer()
+            }
+          }
+        }
 
         Button(action: { viewStore.send(.recordButtonTapped) }) {
           HStack {
@@ -162,7 +207,7 @@ struct SpeechRecognitionView_Previews: PreviewProvider {
   static var previews: some View {
     SpeechRecognitionView(
       store: Store(
-        initialState: .init(transcribedText: "Test test 123"),
+        initialState: .init(),
         reducer: appReducer,
         environment: AppEnvironment(
           mainQueue: .main,

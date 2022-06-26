@@ -7,16 +7,16 @@ struct SpeechRecognitionApp: App {
     WindowGroup {
       HStack{
         
-      SpeechRecognitionView(
-        store: Store(
-          initialState: .init(),
-          reducer: appReducer,
-          environment: AppEnvironment(
-            mainQueue: .main,
-            speechClient: .apple
-          )
-        )
-      )
+//      SpeechRecognitionView(
+//        store: Store(
+//          initialState: .init(),
+//          reducer: appReducer,
+//          environment: AppEnvironment(
+//            mainQueue: .main,
+//            speechClient: .apple
+//          )
+//        )
+//      )
     
       SpeechRecognitionView(
         store: Store(

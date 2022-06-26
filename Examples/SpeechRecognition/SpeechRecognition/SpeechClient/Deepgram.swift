@@ -10,7 +10,6 @@ extension SpeechClient {
     let apiKey = "Token 051eb23117ef848bb315bfeaa84c4a59a99c18b2"
     var audioEngine: AVAudioEngine!
     let shouldPunctuate = true
-    var runningTranscript = ""
 
     lazy var socket: WebSocket = {
       let url =
@@ -64,23 +63,22 @@ extension SpeechClient {
             switch event {
             case let .text(text):
               let jsonData = Data(text.utf8)
-              let response = try! jsonDecoder.decode(DeepgramResponse.self, from: jsonData)
-              let transcript = response.channel.alternatives.first!.transcript
+              let deepgramResponse = try! jsonDecoder.decode(DeepgramResponse.self, from: jsonData)
+              let transcript = deepgramResponse.channel.alternatives.first!.transcript
+              
               if transcript == "" {
                 return
               }
               
-              runningTranscript += "\n" + transcript
+              subscriber.send(.taskResult(SpeechRecognitionResult(deepgramResponse)))
               
-              if response.isFinal {
-                print("Transcript isFinal")
-                subscriber.send(.taskResult(SpeechRecognitionResult(runningTranscript)))
-              } else {
-                print("Transcript !isFinal")
-                subscriber.send(.taskResult(SpeechRecognitionResult(runningTranscript)))
-              }
-//            case let .error(error):
-//              print(error ?? "")
+//              if deepgramResponse.isFinal {
+//                print("Transcript isFinal")
+//                subscriber.send(.taskResult(SpeechRecognitionResult(runningTranscript)))
+//              } else {
+//                print("Transcript !isFinal")
+//                subscriber.send(.taskResult(SpeechRecognitionResult(runningTranscript)))
+//              }
             default:
               print("something else happened")
             }
@@ -151,16 +149,38 @@ private class SpeechRecognizerDelegate: NSObject, SFSpeechRecognizerDelegate {
 
 
 struct DeepgramResponse: Codable {
+  // Indicates that Deepgram has identified a point at which its transcript has reached maximum accuracy
+  // and is sending a definitive transcript of all audio up to that point
   let isFinal: Bool
-  let channel: Channel
+  let channel: DeepgramChannel
+  let start: Float16
   let duration: Float16
   
-  struct Channel: Codable {
-    let alternatives: [Alternatives]
+  struct DeepgramChannel: Codable {
+    let alternatives: [DeepgramAlternative]
   }
   
-  struct Alternatives: Codable {
+  struct DeepgramAlternative: Codable {
     let transcript: String
+    let confidence: Float16
+    let words: [DeepgramWord]
+  }
+  
+  struct DeepgramWord: Codable {
+    let word: String
+    let punctuated_word: String?
+    let start: Float16
+    let end: Float16
+    let confidence: Float16
+    
+    enum CodingKeys: String, CodingKey {
+      case punctuated_word = "punctuated_word"
+      
+      case word
+      case start
+      case end
+      case confidence
+    }
   }
 }
 
