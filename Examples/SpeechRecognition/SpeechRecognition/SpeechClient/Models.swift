@@ -151,7 +151,7 @@ extension SpeechRecognitionResult {
 extension SpeechRecognitionResult {
   init(_ deepgramResponse: DeepgramResponse) {
     words = deepgramResponse.channel.alternatives.first!.words.map({ deepgramWord in
-      return Word(start: deepgramWord.start, end: deepgramWord.end, text: deepgramWord.punctuated_word ?? deepgramWord.word)
+      return Word(start: deepgramWord.start, end: deepgramWord.end, text: deepgramWord.punctuatedWord ?? deepgramWord.word)
     })
     
     punctuatedSentence = deepgramResponse.channel.alternatives.first!.transcript

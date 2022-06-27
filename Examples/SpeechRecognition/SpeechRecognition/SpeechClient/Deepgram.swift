@@ -62,8 +62,12 @@ extension SpeechClient {
             print("event: \(event)")
             switch event {
             case let .text(text):
+//              if text != "" &&  !text.contains("punctuated") {
+//                fatalError("I really want punctuated_words")
+//              }
               let jsonData = Data(text.utf8)
               let deepgramResponse = try! jsonDecoder.decode(DeepgramResponse.self, from: jsonData)
+              print(deepgramResponse.channel.alternatives.first!.words)
               let transcript = deepgramResponse.channel.alternatives.first!.transcript
               
               if transcript == "" {
@@ -168,19 +172,19 @@ struct DeepgramResponse: Codable {
   
   struct DeepgramWord: Codable {
     let word: String
-    let punctuated_word: String?
+    let punctuatedWord: String
     let start: Float16
     let end: Float16
     let confidence: Float16
     
-    enum CodingKeys: String, CodingKey {
-      case punctuated_word = "punctuated_word"
-      
-      case word
-      case start
-      case end
-      case confidence
-    }
+//    enum CodingKeys: String, CodingKey {
+//      case punctuatedWord = "punctuated_word"
+//
+//      case word
+//      case start
+//      case end
+//      case confidence
+//    }
   }
 }
 
